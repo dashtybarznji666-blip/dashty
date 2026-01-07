@@ -23,8 +23,8 @@ const Expenses = lazy(() => import('@/pages/Expenses'));
 const Reports = lazy(() => import('@/pages/Reports'));
 const Shipping = lazy(() => import('@/pages/Shipping'));
 const Suppliers = lazy(() => import('@/pages/Suppliers'));
-const Users = lazy(() => import('@/pages/Users'));
-const Admin = lazy(() => import('@/pages/Admin'));
+//const Users = lazy(() => import('@/pages/Users'));
+//const Admin = lazy(() => import('@/pages/Admin'));
 
 const queryClient = new QueryClient({
   defaultOptions: {
