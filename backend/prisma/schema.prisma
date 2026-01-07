@@ -1,0 +1,187 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Shoe {
+  id          String   @id @default(uuid())
+  name        String
+  brand       String
+  category    String   // men/women/kids
+  sizes       String   // JSON array stored as string
+  price       Float
+  costPrice   Float    @map("cost_price")
+  sku         String   @unique
+  description String?
+  imageUrl    String?  @map("image_url")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  stock     Stock[]
+  sales     Sale[]
+  purchases Purchase[]
+
+  @@map("shoes")
+}
+
+model Stock {
+  id        String   @id @default(uuid())
+  shoeId    String   @map("shoe_id")
+  size      String
+  quantity  Int      @default(0)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  shoe Shoe @relation(fields: [shoeId], references: [id], onDelete: Cascade)
+
+  @@unique([shoeId, size])
+  @@map("stock")
+}
+
+model Sale {
+  id          String   @id @default(uuid())
+  shoeId      String   @map("shoe_id")
+  userId      String?  @map("user_id") // Optional to handle existing sales
+  size        String
+  quantity    Int
+  unitPrice   Float    @map("unit_price")  // Price in IQD
+  totalPrice  Float    @map("total_price")  // Total in IQD
+  profit      Float    // Profit in IQD
+  exchangeRate Float?  @map("exchange_rate") // USD to IQD rate at time of sale
+  isOnline    Boolean  @default(false) @map("is_online") // Whether sale was made online
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  shoe Shoe @relation(fields: [shoeId], references: [id], onDelete: Cascade)
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])
+  @@index([shoeId])
+  @@index([isOnline])
+  @@index([userId])
+  @@map("sales")
+}
+
+model ExchangeRate {
+  id          String   @id @default(uuid())
+  rate        Float    // USD to IQD exchange rate
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("exchange_rates")
+}
+
+model Expense {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  amount      Float    // Amount in IQD
+  category    String   // salary, rent, utilities, supplies, other
+  type        String   // daily, monthly
+  date        DateTime @default(now())
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("expenses")
+}
+
+model Supplier {
+  id          String   @id @default(uuid())
+  name        String
+  contact     String?  // Phone/email
+  address     String?
+  notes       String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  purchases   Purchase[]
+  payments    SupplierPayment[]
+
+  @@map("suppliers")
+}
+
+model Purchase {
+  id          String   @id @default(uuid())
+  supplierId  String   @map("supplier_id")
+  shoeId      String   @map("shoe_id")
+  size        String
+  quantity    Int
+  unitCost    Float    @map("unit_cost")  // Cost per unit in IQD
+  totalCost   Float    @map("total_cost")  // Total purchase cost
+  isCredit    Boolean  @default(false) @map("is_credit")  // Whether purchased on credit/loan
+  paidAmount  Float    @default(0) @map("paid_amount")  // Amount paid (if partial payment)
+  isTodo      Boolean  @default(false) @map("is_todo")  // Whether purchase needs attention
+  notes       String?
+  purchaseDate DateTime @default(now()) @map("purchase_date")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  supplier    Supplier @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  shoe        Shoe     @relation(fields: [shoeId], references: [id], onDelete: Cascade)
+
+  payments    SupplierPayment[]
+
+  @@map("purchases")
+}
+
+model SupplierPayment {
+  id          String   @id @default(uuid())
+  supplierId  String   @map("supplier_id")
+  purchaseId  String?  @map("purchase_id")  // Optional: link to specific purchase
+  amount      Float    // Payment amount in IQD
+  paymentDate DateTime @default(now()) @map("payment_date")
+  notes       String?
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  supplier    Supplier @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  purchase    Purchase? @relation(fields: [purchaseId], references: [id], onDelete: SetNull)
+
+  @@map("supplier_payments")
+}
+
+model User {
+  id              String    @id @default(uuid())
+  name            String
+  phoneNumber     String    @unique
+  password        String    // Hashed password
+  role            String    @default("user") // 'admin' or 'user'
+  isActive        Boolean   @default(true) @map("is_active")
+  resetToken      String?   @map("reset_token")
+  resetTokenExpiry DateTime? @map("reset_token_expiry")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  activityLogs    ActivityLog[]
+  sales           Sale[]
+
+  @@map("users")
+}
+
+model ActivityLog {
+  id          String   @id @default(uuid())
+  userId      String   @map("user_id")
+  action      String   // e.g., 'create_shoe', 'update_stock', 'delete_sale', 'login', etc.
+  entityType  String   @map("entity_type") // e.g., 'shoe', 'stock', 'sale', 'expense', etc.
+  entityId    String?  @map("entity_id") // ID of the affected entity
+  description String?  // Human-readable description
+  metadata    String?  // JSON string for additional data
+  ipAddress   String?  @map("ip_address")
+  userAgent   String?  @map("user_agent")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([action])
+  @@index([entityType])
+  @@index([createdAt])
+  @@map("activity_logs")
+}
+
+

@@ -1,0 +1,57 @@
+{
+  
+  "name": "vito",
+  
+  "version": "1.0.0",
+  
+  "description": "A complete, production-ready shoe store management system built with Node.js, Prisma, React, TypeScript, and shadcn/ui.",
+  
+  "main": "main.js",
+  
+  "scripts": {
+  
+    
+  "start-web": "react-scripts start",
+  
+    
+  "build": "react-scripts build",
+  
+    
+  "start": "electron ."
+  
+  },
+  
+  "keywords": [],
+  
+  "author": "",
+  
+  "license": "ISC",
+  
+  "type": "commonjs",
+  
+  "devDependencies": {
+  
+    
+  "electron": "^39.2.5"
+  
+  },
+  
+  "dependencies": {
+  
+    
+  "@radix-ui/react-alert-dialog": "^1.1.15",
+  
+    
+  "@types/swagger-jsdoc": "^6.0.4",
+  
+    
+  "@types/swagger-ui-express": "^4.1.8",
+  
+    
+  "swagger-jsdoc": "^6.2.8",
+  
+    
+  "swagger-ui-express": "^5.0.1"
+  
+  }
+}
