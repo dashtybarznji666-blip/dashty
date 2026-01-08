@@ -1,0 +1,9 @@
+{
+  "$schema": "https://railway.app/standard-schema.json",
+  "build": {
+    "builder": "NIXPACKS",
+    "env": {
+      "NIXPACKS_NODEJS_VERSION": "20"
+    }
+  }
+}
