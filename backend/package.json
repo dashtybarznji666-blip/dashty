@@ -20,7 +20,8 @@
     "backup:list": "tsx scripts/backup.ts list",
     "restore": "tsx scripts/restore.ts",
     "list-users": "tsx scripts/list-users.ts",
-    "delete-users": "tsx scripts/delete-users.ts"
+    "delete-users": "tsx scripts/delete-users.ts",
+    "check-admin": "tsx scripts/check-admin-user.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

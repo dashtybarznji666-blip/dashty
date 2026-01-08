@@ -78,7 +78,11 @@ export default function Login() {
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!signInPhoneNumber || !signInPassword) {
+    // Trim phone number and password to remove any whitespace
+    const trimmedPhone = signInPhoneNumber.trim();
+    const trimmedPassword = signInPassword.trim();
+    
+    if (!trimmedPhone || !trimmedPassword) {
       toast({
         title: t('auth.error'),
         description: t('auth.fillAllFields'),
@@ -89,11 +93,11 @@ export default function Login() {
 
     setIsLoading(true);
     try {
-      const success = await login(signInPhoneNumber, signInPassword);
+      const success = await login(trimmedPhone, trimmedPassword);
       if (success) {
         // Save phone number if remember me is checked
         if (rememberMe) {
-          localStorage.setItem('rememberedPhoneNumber', signInPhoneNumber);
+          localStorage.setItem('rememberedPhoneNumber', trimmedPhone);
         } else {
           localStorage.removeItem('rememberedPhoneNumber');
         }

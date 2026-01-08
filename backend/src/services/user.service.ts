@@ -7,9 +7,12 @@ export class UserService {
     // Hash password
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
+    // Normalize phone number by trimming whitespace
+    const normalizedPhone = data.phoneNumber.trim();
+
     // Check if phone number already exists
     const existingUser = await prisma.user.findUnique({
-      where: { phoneNumber: data.phoneNumber },
+      where: { phoneNumber: normalizedPhone },
     });
 
     if (existingUser) {
@@ -19,7 +22,7 @@ export class UserService {
     return prisma.user.create({
       data: {
         name: data.name,
-        phoneNumber: data.phoneNumber,
+        phoneNumber: normalizedPhone,
         password: hashedPassword,
         role: data.role || 'user',
       },
@@ -27,8 +30,10 @@ export class UserService {
   }
 
   async findByPhoneNumber(phoneNumber: string) {
+    // Normalize phone number by trimming whitespace
+    const normalizedPhone = phoneNumber.trim();
     return prisma.user.findUnique({
-      where: { phoneNumber },
+      where: { phoneNumber: normalizedPhone },
       select: {
         id: true,
         name: true,

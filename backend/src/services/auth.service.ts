@@ -19,8 +19,11 @@ export class AuthService {
       throw new Error('Invalid registration password');
     }
 
+    // Normalize phone number by trimming whitespace
+    const normalizedPhone = data.phoneNumber.trim();
+
     // Check if user already exists
-    const existingUser = await this.userService.findByPhoneNumber(data.phoneNumber);
+    const existingUser = await this.userService.findByPhoneNumber(normalizedPhone);
     if (existingUser) {
       throw new Error('Phone number already exists');
     }
@@ -28,7 +31,7 @@ export class AuthService {
     // Create new user
     const user = await this.userService.createUser({
       name: data.name,
-      phoneNumber: data.phoneNumber,
+      phoneNumber: normalizedPhone,
       password: data.password,
       role: 'user', // Default role
     });
@@ -49,8 +52,10 @@ export class AuthService {
   }
 
   async login(data: LoginInput) {
+    // Normalize phone number by trimming whitespace
+    const normalizedPhone = data.phoneNumber.trim();
     // Find user by phone number
-    const user = await this.userService.findByPhoneNumber(data.phoneNumber);
+    const user = await this.userService.findByPhoneNumber(normalizedPhone);
     if (!user) {
       throw new Error('Invalid phone number or password');
     }
@@ -91,8 +96,10 @@ export class AuthService {
   }
 
   async requestPasswordReset(phoneNumber: string): Promise<void> {
+    // Normalize phone number by trimming whitespace
+    const normalizedPhone = phoneNumber.trim();
     // Find user by phone number
-    const user = await this.userService.findByPhoneNumber(phoneNumber);
+    const user = await this.userService.findByPhoneNumber(normalizedPhone);
     
     // Don't reveal if user exists or not (security best practice)
     if (!user) {
