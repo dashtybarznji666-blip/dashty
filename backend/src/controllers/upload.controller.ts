@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { UploadService } from '../services/upload.service';
 import { asyncHandler } from '../middleware/errorHandler.middleware';
+import { logError } from '../lib/logger';
 
 const uploadService = new UploadService();
 
@@ -26,7 +27,7 @@ export class UploadController {
       const imageUrl = await uploadService.uploadImage(req.file);
       res.json({ imageUrl });
     } catch (error: any) {
-      console.error('Upload error:', error);
+      logError('Upload error', error);
       // Provide more specific error messages
       if (error.message?.includes('Cloudinary')) {
         throw new Error('Failed to upload image to cloud storage. Please try again.');

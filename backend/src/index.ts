@@ -58,23 +58,23 @@ const corsOptions = {
     : (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
         // In production, validate against FRONTEND_URL
         const allowedOrigins = [env.frontendUrl];
-        // Also allow common localhost ports for testing
-        if (env.nodeEnv !== 'production') {
-          allowedOrigins.push('http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000');
-        }
         
         // Allow requests with no origin (like mobile apps or curl requests)
         if (!origin) {
           return callback(null, true);
         }
         
-        // Check if origin matches allowed origins
-        if (allowedOrigins.includes(origin)) {
+        // Normalize origin (remove trailing slash)
+        const normalizedOrigin = origin.endsWith('/') ? origin.slice(0, -1) : origin;
+        const normalizedFrontendUrl = env.frontendUrl.endsWith('/') ? env.frontendUrl.slice(0, -1) : env.frontendUrl;
+        
+        // Check if origin matches allowed origins (exact match required in production)
+        if (normalizedOrigin === normalizedFrontendUrl) {
           callback(null, true);
         } else {
           logger.warn(`CORS: Blocked request from unauthorized origin: ${origin}`, {
-            allowedOrigins,
-            requestedOrigin: origin,
+            allowedOrigin: normalizedFrontendUrl,
+            requestedOrigin: normalizedOrigin,
           });
           callback(new Error('Not allowed by CORS'));
         }

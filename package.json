@@ -1,57 +1,27 @@
 {
-  
-  "name": "vito",
-  
+  "name": "dashty",
   "version": "1.0.0",
-  
   "description": "A complete, production-ready shoe store management system built with Node.js, Prisma, React, TypeScript, and shadcn/ui.",
-  
-  "main": "main.js",
-  
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
   "scripts": {
-  
-    
-  "start-web": "react-scripts start",
-  
-    
-  "build": "react-scripts build",
-  
-    
-  "start": "electron ."
-  
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build:backend": "cd backend && npm run build",
+    "build:frontend": "cd frontend && npm run build",
+    "build": "npm run build:backend && npm run build:frontend"
   },
-  
-  "keywords": [],
-  
+  "keywords": [
+    "shoe-store",
+    "management-system",
+    "full-stack",
+    "typescript",
+    "react",
+    "nodejs"
+  ],
   "author": "",
-  
-  "license": "ISC",
-  
-  "type": "commonjs",
-  
-  "devDependencies": {
-  
-    
-  "electron": "^39.2.5"
-  
-  },
-  
-  "dependencies": {
-  
-    
-  "@radix-ui/react-alert-dialog": "^1.1.15",
-  
-    
-  "@types/swagger-jsdoc": "^6.0.4",
-  
-    
-  "@types/swagger-ui-express": "^4.1.8",
-  
-    
-  "swagger-jsdoc": "^6.2.8",
-  
-    
-  "swagger-ui-express": "^5.0.1"
-  
-  }
+  "license": "ISC"
 }

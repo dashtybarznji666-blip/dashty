@@ -4,6 +4,7 @@ import { generateTokenPair, TokenPair } from '../lib/jwt';
 import crypto from 'crypto';
 import bcrypt from 'bcrypt';
 import prisma from '../lib/prisma';
+import { logger } from '../lib/logger';
 
 export class AuthService {
   private userService: UserService;
@@ -128,7 +129,7 @@ export class AuthService {
 
     // Note: Password reset via SMS would be implemented here
     // For now, admin can reset passwords directly
-    console.log(`Password reset token generated for user: ${user.phoneNumber}`);
+    logger.info(`Password reset token generated for user: ${user.phoneNumber}`);
   }
 
   async resetPassword(token: string, newPassword: string): Promise<void> {

@@ -2,6 +2,7 @@ import prisma from '../lib/prisma';
 import { CreateSaleInput, AddStockInput } from '../types';
 import { StockService } from './stock.service';
 import { ExchangeRateService } from './exchange-rate.service';
+import { logError } from '../lib/logger';
 
 export class SaleService {
   private stockService: StockService;
@@ -149,7 +150,7 @@ export class SaleService {
         },
       });
     } catch (error: any) {
-      console.error('Prisma error creating sale:', error);
+      logError('Prisma error creating sale', error);
       throw error;
     }
   }

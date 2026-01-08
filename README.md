@@ -314,6 +314,17 @@ VITE_API_URL=https://api.yourdomain.com/api
 - Set up automated deployments (CI/CD)
 - Review and test all security measures
 
+## Troubleshooting
+
+For common issues and solutions, see [TROUBLESHOOTING.md](TROUBLESHOOTING.md).
+
+Common issues include:
+- Authentication/login problems
+- CORS errors
+- Database connection issues
+- Build errors
+- Deployment issues
+
 ## Notes
 
 - The backend CORS is configured to allow requests from the frontend
@@ -321,14 +332,22 @@ VITE_API_URL=https://api.yourdomain.com/api
 - Loading states are handled throughout the application
 - Error handling is implemented on both backend and frontend
 - The seed script creates sample shoes with stock for testing
+- Phone numbers are automatically normalized (trimmed) to prevent login issues
+- All console statements have been replaced with proper logging
+
+## Additional Resources
+
+- [TROUBLESHOOTING.md](TROUBLESHOOTING.md) - Common issues and solutions
+- [DEPLOYMENT_SCRIPTS.md](DEPLOYMENT_SCRIPTS.md) - Deployment guide
+- [DEPLOYMENT_TODO.md](DEPLOYMENT_TODO.md) - Deployment checklist
+- [QUICKSTART.md](QUICKSTART.md) - Quick start guide
 
 ## License
 
 ISC
-
-
-#   d a s h t y 
  
- #   d a s h t y  
- #   d a s h t y  
+ #   d a s h t y 
+ 
+ #   d a s h t y 
+ 
  

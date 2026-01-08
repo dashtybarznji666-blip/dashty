@@ -1,5 +1,6 @@
 import cloudinary from '../lib/cloudinary';
 import { UploadApiResponse, UploadApiErrorResponse } from 'cloudinary';
+import { logError } from '../lib/logger';
 
 export class UploadService {
   async uploadImage(file: Express.Multer.File): Promise<string> {
@@ -16,7 +17,7 @@ export class UploadService {
         },
         (error: UploadApiErrorResponse | undefined, result: UploadApiResponse | undefined) => {
           if (error) {
-            console.error('Cloudinary upload error:', error);
+            logError('Cloudinary upload error', error);
             reject(new Error('Failed to upload image to Cloudinary'));
           } else if (result) {
             resolve(result.secure_url);
@@ -39,7 +40,7 @@ export class UploadService {
 
       await cloudinary.uploader.destroy(publicId);
     } catch (error) {
-      console.error('Failed to delete image from Cloudinary:', error);
+      logError('Failed to delete image from Cloudinary', error);
       // Don't throw - deletion failure shouldn't break the flow
     }
   }

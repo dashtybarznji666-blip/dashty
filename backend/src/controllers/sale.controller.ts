@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { SaleService } from '../services/sale.service';
 import { CreateSaleInput } from '../types';
+import { logError, logDebug } from '../lib/logger';
 
 const saleService = new SaleService();
 
@@ -55,7 +56,7 @@ export class SaleController {
     try {
       const data = req.body as CreateSaleInput;
       const userId = req.user?.userId; // Get userId from authenticated request
-      console.log('Creating sale with data:', JSON.stringify(data, null, 2));
+      logDebug('Creating sale', { data, userId });
       const sale = await saleService.createSale(data, userId);
       
       // Log activity
@@ -76,8 +77,7 @@ export class SaleController {
       
       res.status(201).json(sale);
     } catch (error: any) {
-      console.error('Error creating sale:', error);
-      console.error('Error stack:', error.stack);
+      logError('Error creating sale', error, { stack: error.stack });
       
       if (error.message === 'Stock not found for this shoe and size' || 
           error.message === 'Insufficient stock' ||
@@ -110,7 +110,7 @@ export class SaleController {
         deletedCount: result.deletedCount 
       });
     } catch (error: any) {
-      console.error('Error deleting all sales:', error);
+      logError('Error deleting all sales', error);
       res.status(500).json({ error: error.message || 'Failed to delete sales' });
     }
   }
@@ -123,7 +123,7 @@ export class SaleController {
         deletedCount: result.deletedCount 
       });
     } catch (error: any) {
-      console.error('Error deleting all shipping sales:', error);
+      logError('Error deleting all shipping sales', error);
       res.status(500).json({ error: error.message || 'Failed to delete shipping sales' });
     }
   }
@@ -140,7 +140,7 @@ export class SaleController {
       if (error.message === 'Sale not found') {
         return res.status(404).json({ error: error.message });
       }
-      console.error('Error deleting sale:', error);
+      logError('Error deleting sale', error);
       res.status(500).json({ error: error.message || 'Failed to delete sale' });
     }
   }

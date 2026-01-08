@@ -1,5 +1,6 @@
 import { Request } from 'express';
 import { ActivityLogService, CreateActivityLogInput } from '../services/activity-log.service';
+import { logError } from './logger';
 
 const activityLogService = new ActivityLogService();
 
@@ -47,7 +48,7 @@ export async function logActivity(
     await activityLogService.createLog(logData);
   } catch (error) {
     // Don't throw - activity logging should not break the main flow
-    console.error('Failed to log activity:', error);
+    logError('Failed to log activity', error);
   }
 }
 

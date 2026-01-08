@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { SupplierService } from '../services/supplier.service';
 import { CreateSupplierInput, UpdateSupplierInput } from '../types';
+import { logError, logDebug } from '../lib/logger';
 
 const supplierService = new SupplierService();
 
@@ -53,12 +54,11 @@ export class SupplierController {
   async createSupplier(req: Request, res: Response) {
     try {
       const data: CreateSupplierInput = req.body;
-      console.log('Creating supplier with data:', JSON.stringify(data, null, 2));
+      logDebug('Creating supplier', { data });
       const supplier = await supplierService.createSupplier(data);
       res.status(201).json(supplier);
     } catch (error: any) {
-      console.error('Error creating supplier:', error);
-      console.error('Error stack:', error.stack);
+      logError('Error creating supplier', error, { stack: error.stack });
       res.status(500).json({ 
         error: error.message || 'Failed to create supplier',
         details: process.env.NODE_ENV === 'development' ? error.stack : undefined
