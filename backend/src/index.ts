@@ -32,10 +32,11 @@ app.use(helmet({
       styleSrc: ["'self'", "'unsafe-inline'"], // Allow inline styles for Swagger UI
       scriptSrc: ["'self'", "'unsafe-inline'"], // Allow inline scripts for Swagger UI
       imgSrc: ["'self'", 'data:', 'https:'], // Allow images from any HTTPS source
-      connectSrc: ["'self'"],
+      connectSrc: ["'self'", 'https:', 'http:'], // Allow API connections to any HTTPS/HTTP endpoint
     },
   },
   crossOriginEmbedderPolicy: false, // Disable for Swagger UI compatibility
+  crossOriginResourcePolicy: { policy: "cross-origin" }, // Allow cross-origin resource sharing
 }));
 
 // CORS configuration - allow requests from frontend
@@ -87,10 +88,15 @@ const corsOptions = {
   optionsSuccessStatus: 204,
 };
 
+// Apply CORS middleware before other middleware
 app.use(cors(corsOptions));
 
-// Explicitly handle OPTIONS requests for all routes
+// Explicitly handle OPTIONS requests for all routes (CORS preflight)
 app.options('*', cors(corsOptions));
+
+// Trust proxy for correct IP and protocol detection (important for Railway/Vercel)
+app.set('trust proxy', 1);
+
 app.use(express.json());
 
 // Swagger API Documentation
@@ -106,8 +112,14 @@ app.get('/api/docs.json', (req, res) => {
 });
 
 // Health check (public endpoint, no authentication required)
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+// Always set CORS headers for health check
+app.get('/api/health', cors(corsOptions), (req, res) => {
+  res.json({ 
+    status: 'ok', 
+    timestamp: new Date().toISOString(),
+    environment: env.nodeEnv,
+    frontendUrl: env.frontendUrl,
+  });
 });
 
 // Apply rate limiting to all API routes (except docs and health)
@@ -138,10 +150,12 @@ app.use(notFoundHandler);
 // Error handling middleware (must be last)
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  logger.info(`Server running on http://localhost:${PORT}`, { 
+// Listen on 0.0.0.0 to accept connections from outside the container (important for Railway/Vercel)
+app.listen(PORT, '0.0.0.0', () => {
+  logger.info(`Server running on 0.0.0.0:${PORT}`, { 
     nodeEnv: env.nodeEnv,
-    port: PORT 
+    port: PORT,
+    frontendUrl: env.frontendUrl,
   });
 });
 

@@ -60,8 +60,20 @@ export function errorHandler(
   // Ensure CORS headers are set on error responses
   const origin = req.headers.origin;
   if (origin) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    // Check if origin is allowed (same validation as CORS middleware)
+    const normalizedOrigin = origin.endsWith('/') ? origin.slice(0, -1) : origin;
+    const normalizedFrontendUrl = env.frontendUrl.endsWith('/') ? env.frontendUrl.slice(0, -1) : env.frontendUrl;
+    
+    // In production, only allow the configured frontend URL
+    // In development, allow all origins
+    const isAllowed = env.nodeEnv !== 'production' || normalizedOrigin === normalizedFrontendUrl;
+    
+    if (isAllowed) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+      res.setHeader('Access-Control-Allow-Credentials', 'true');
+      res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+      res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
+    }
   }
 
   // Send error response
