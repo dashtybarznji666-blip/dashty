@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Prisma } from '@prisma/client';
 import { env } from './env';
 import { logger } from './logger';
 
@@ -9,10 +9,10 @@ import { logger } from './logger';
 const globalForPrisma = global as unknown as { prisma: PrismaClient };
 
 // Configure Prisma Client with production optimizations
-const prismaClientOptions = {
+const prismaClientOptions: Prisma.PrismaClientOptions = {
   log: env.nodeEnv === 'development' 
-    ? ['query', 'error', 'warn'] 
-    : ['error'],
+    ? (['query', 'error', 'warn'] as Prisma.LogLevel[])
+    : (['error'] as Prisma.LogLevel[]),
   errorFormat: 'pretty' as const,
 };
 

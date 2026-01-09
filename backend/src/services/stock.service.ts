@@ -58,7 +58,7 @@ export class StockService {
   }
 
   async bulkAddStock(shoeId: string, stockEntries: Array<{ size: string; quantity: number }>) {
-    const results = [];
+    const results: Awaited<ReturnType<typeof this.addStock>>[] = [];
     
     for (const entry of stockEntries) {
       if (entry.quantity > 0) {
