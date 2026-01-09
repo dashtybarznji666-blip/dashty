@@ -4,25 +4,11 @@
   "description": "Shoe Store Management System Backend",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "build": "tsc",
-    "start": "node dist/index.js",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
-    "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate dev",
-    "prisma:migrate:deploy": "prisma migrate deploy",
-    "prisma:seed": "tsx prisma/seed.ts",
-    "prisma:studio": "prisma studio",
-    "postinstall": "prisma generate",
-    "backup": "tsx scripts/backup.ts",
-    "backup:list": "tsx scripts/backup.ts list",
-    "restore": "tsx scripts/restore.ts",
-    "list-users": "tsx scripts/list-users.ts",
-    "delete-users": "tsx scripts/delete-users.ts",
-    "check-admin": "tsx scripts/check-admin-user.ts"
-  },
+  "build": "npx prisma generate && tsc",
+  "start": "node dist/index.js",
+  "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+  "postinstall": "npx prisma generate"
+},
   "prisma": {
     "seed": "tsx prisma/seed.ts"
   },
