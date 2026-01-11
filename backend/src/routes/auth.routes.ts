@@ -97,7 +97,7 @@ router.post('/register', authLimiter, validate(registerSchema), authController.r
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.post('/login', authLimiter, validate(loginSchema), authController.login);
+router.post('/login', authLimiter as any, validate(loginSchema), authController.login);
 
 /**
  * @swagger
