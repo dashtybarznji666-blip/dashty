@@ -58,7 +58,7 @@ const authController = new AuthController();
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.post('/register', authLimiter, validate(registerSchema), authController.register);
+router.post('/register', authLimiter as any, validate(registerSchema), authController.register);
 
 /**
  * @swagger
@@ -123,7 +123,7 @@ router.post('/login', authLimiter as any, validate(loginSchema), authController.
  *       200:
  *         description: Password reset token generated (if account exists)
  */
-router.post('/forgot-password', passwordResetLimiter, validate(forgotPasswordSchema), (req, res) => authController.forgotPassword(req, res));
+router.post('/forgot-password', passwordResetLimiter as any, validate(forgotPasswordSchema), (req, res) => authController.forgotPassword(req, res));
 
 /**
  * @swagger
@@ -219,7 +219,7 @@ router.post('/verify-reset-token', validate(verifyResetTokenSchema), (req, res) 
  *       401:
  *         description: Invalid or expired refresh token
  */
-router.post('/refresh', authLimiter, validate(refreshTokenSchema), authController.refreshToken);
+router.post('/refresh', authLimiter as any, validate(refreshTokenSchema), authController.refreshToken);
 
 export default router;
 
